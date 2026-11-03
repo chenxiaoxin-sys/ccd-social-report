@@ -1,0 +1,264 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CCD 社媒声量报告</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@700;900&display=swap">
+<style>
+:root{
+  --bg:#F2F4F7; --surface:#FFFFFF; --ink:#1A2130; --muted:#5F6A80; --line:#DCE1EA;
+  --stamp:#E2621B; --blue:#3557A8; --blue-soft:#C9D5EE; --grey-bar:#B9C1CF; --neg:#B4473A; --neg-soft:#EBC6BF;
+  --serif:"Noto Serif SC","Songti SC",serif; --sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif; --dot:"DotGothic16","Courier New",monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark; --bg:#11151C; --surface:#1A2029; --ink:#E7EBF2; --muted:#9AA5B8; --line:#2C3441;
+  --stamp:#FF8A3D; --blue:#86A6EE; --blue-soft:#34466F; --grey-bar:#4A5466; --neg:#E58878; --neg-soft:#5A3530;}}
+:root[data-theme="dark"]{
+  color-scheme:dark; --bg:#11151C; --surface:#1A2029; --ink:#E7EBF2; --muted:#9AA5B8; --line:#2C3441;
+  --stamp:#FF8A3D; --blue:#86A6EE; --blue-soft:#34466F; --grey-bar:#4A5466; --neg:#E58878; --neg-soft:#5A3530;}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.7;padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:960px;margin:0 auto}
+a{color:var(--blue)} a:focus-visible{outline:2px solid var(--stamp);outline-offset:2px}
+h1,h2{font-family:var(--serif);text-wrap:balance;margin:0}
+h1{font-size:clamp(28px,5vw,44px);line-height:1.2;font-weight:900}
+h2{font-size:24px;line-height:1.3}
+h3{font-size:16px;margin:0 0 4px}
+p{margin:0;max-width:68ch}
+.stamp{font-family:var(--dot);color:var(--stamp);letter-spacing:.06em}
+.num{font-family:var(--dot);font-variant-numeric:tabular-nums}
+.label{font-size:12px;letter-spacing:.08em;color:var(--muted)}
+header{padding-block:48px 28px;display:grid;gap:16px;border-bottom:1px solid var(--line)}
+.lede{font-size:18px;color:var(--ink)}
+.meta{color:var(--muted);font-size:13px}
+section{padding-block:40px;border-bottom:1px solid var(--line);display:grid;gap:20px}
+.sec-head{display:grid;gap:8px}
+.sec-head .stamp{font-size:14px}
+.note{font-size:13px;color:var(--muted)}
+/* bar charts */
+.chart{display:grid;gap:6px}
+.group-title{font-size:13px;font-weight:700;margin-top:10px;color:var(--muted)}
+.row{display:grid;grid-template-columns:minmax(110px,190px) 1fr 44px;align-items:center;gap:10px;font-size:14px}
+.track{height:16px;background:transparent;position:relative}
+.bar{height:100%;background:var(--blue);border-radius:0 3px 3px 0}
+.bar.alt{background:var(--stamp)} .bar.grey{background:var(--grey-bar)} .bar.neg{background:var(--neg)}
+.row .num{text-align:right;font-size:15px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted)}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:middle}
+/* funnel */
+.funnel{display:grid;gap:8px}
+.frow{display:grid;grid-template-columns:1fr;gap:2px}
+.fbar{height:30px;background:var(--blue-soft);display:flex;align-items:center;padding-inline:10px;font-family:var(--dot);font-size:16px;border-radius:3px;color:var(--ink)}
+.fbar.final{background:var(--blue);color:var(--surface)}
+.frow span{font-size:13px;color:var(--muted)}
+/* diverging */
+.div-chart{display:grid;gap:6px}
+.drow{display:grid;grid-template-columns:1fr 130px 1fr;align-items:center;gap:8px;font-size:14px}
+.drow .l{display:flex;justify-content:flex-end;align-items:center;gap:6px}
+.drow .r{display:flex;align-items:center;gap:6px}
+.drow .mid{text-align:center;color:var(--muted);font-size:13px}
+.dbar{height:16px}
+.dbar.pos{background:var(--blue);border-radius:0 3px 3px 0}
+.dbar.neg{background:var(--neg);border-radius:3px 0 0 3px}
+.drow .num{font-size:14px}
+/* cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 16px;display:grid;gap:6px;align-content:start}
+.card .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.card .tag{font-size:12px;color:var(--muted)}
+.card q{quotes:"“" "”";font-size:14px}
+.card .src{font-size:12px;color:var(--muted)}
+/* bubbles */
+.bubbles{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.bub{border-radius:50%;background:var(--blue-soft);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.2;font-size:13px;color:var(--ink);flex:none}
+.bub .num{font-size:13px;color:var(--blue)}
+.bub.hot{background:var(--stamp);color:#fff} .bub.hot .num{color:#fff}
+/* mapping */
+.map{display:grid;gap:8px}
+.mrow{display:grid;grid-template-columns:1fr 40px 1.3fr;align-items:center;gap:8px}
+.mrow .cam{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:6px 10px;font-weight:500}
+.mrow .arrow{height:2px;background:var(--stamp);position:relative}
+.mrow .arrow::after{content:"";position:absolute;right:-2px;top:-4px;border-left:7px solid var(--stamp);border-top:5px solid transparent;border-bottom:5px solid transparent}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--dot);font-size:13px;border:1px dashed var(--stamp);color:var(--stamp);border-radius:3px;padding:1px 8px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px}
+/* insights */
+.ins{display:grid;gap:14px}
+.ins-item{display:grid;grid-template-columns:36px 1fr;gap:12px;align-items:start}
+.ins-item .stamp{font-size:22px;line-height:1.3}
+.ins-item p{font-size:14px;color:var(--muted)}
+.ins-item h3{font-size:16px}
+.caveat{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 16px;font-size:13px;color:var(--muted);display:grid;gap:6px}
+@media (max-width:560px){
+  .row{grid-template-columns:96px 1fr 36px;font-size:13px}
+  .drow{grid-template-columns:1fr 84px 1fr;font-size:12px}
+  .mrow{grid-template-columns:1fr;gap:4px} .mrow .arrow{display:none}
+}
+@media (prefers-reduced-motion:no-preference){.bar,.dbar{transition:width .4s ease}}
+</style>
+<div class="wrap">
+<header>
+  <div class="stamp">'25 11 04 — '26 11 03 · SOCIAL LISTENING</div>
+  <h1>大家嘴里的"CCD"，已经是一种闪光人像风格</h1>
+  <p class="lede">讨论围绕佳能 G12、IXUS 这类老卡片机展开，但被叫作 CCD 的还有大疆 Pocket、理光 GR、旧 iPhone，甚至手机滤镜。用户在意的是氛围感、闪光直打和显白的肤色，传感器类型很少有人关心。</p>
+  <p class="meta">数据：小红书、抖音等短视频、B 站等视频、微博、微信、新闻、论坛 7 个平台，各 200 条含"ccd"关键词的帖子。全平台合并分析。</p>
+</header>
+
+<section>
+  <div class="sec-head">
+    <div class="stamp">00 · 样本口径</div>
+    <h2>1,400 条里有 692 条在聊相机</h2>
+    <p class="note">"CCD"在其他语境里指汽车可变阻尼悬架、CCD 郑中设计、工业视觉检测、AMD 处理器的核心模块，这些先剔除。微博上同一段文字被粉丝反复转发，按内容去重。B 站一位音乐博主的 45 条视频都列出同一台索尼 CCD-TRV67 摄像机，属于单账号刷屏，也不计入。</p>
+  </div>
+  <div class="funnel" id="funnel"></div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="stamp">01 · 型号</div>
+    <h2>真 CCD 机里佳能领先；Pocket 和理光 GR 被并列讨论的次数更多</h2>
+  </div>
+  <div class="legend">
+    <span><i class="sw" style="background:var(--blue)"></i>真 CCD 卡片机</span>
+    <span><i class="sw" style="background:var(--stamp)"></i>被叫作 CCD 的非 CCD 设备</span>
+    <span><i class="sw" style="background:var(--grey-bar)"></i>低价机与模仿手段</span>
+  </div>
+  <div class="chart" id="models"></div>
+  <p class="note">提到该型号的帖子数（N=692）。佳能 G12、G11 是 CCD，G7X 系列是 CMOS，所以分开统计。按品牌泛提的话：佳能 93、富士 57、索尼 45、柯达 18、尼康 16，多数帖子只写"佳能ccd""富士ccd"，不写具体型号。</p>
+  <div class="cards">
+    <div class="card"><div class="top"><h3>佳能 G12</h3><span class="tag num">11 条 · 对比视频常客</span></div>
+      <q>偏蓝调的，再黄的人拍出来也是白的……唇红齿白，原片面部非常平整</q>
+      <span class="src">抖音 · 57.8 万互动 · <a href="https://www.douyin.com/jingxuan?modal_id=7638170454617060515" target="_blank" rel="noopener">原帖</a></span></div>
+    <div class="card"><div class="top"><h3>佳能 IXUS 130 / 220</h3><span class="tag num">IXUS 系列 16 条</span></div>
+      <q>接下来就请出我今天的这台秘密法宝，佳能 ixus130……闪光灯这个画面</q>
+      <span class="src">抖音 · 39.7 万互动 · <a href="https://www.douyin.com/jingxuan?modal_id=7686083477766262052" target="_blank" rel="noopener">原帖</a></span></div>
+    <div class="card"><div class="top"><h3>佳能 IXUS 860IS</h3><span class="tag">怀旧叙事</span></div>
+      <q>我竟然在地下室找到了 20 年前的机皇 ccd</q>
+      <span class="src">小红书 · 5.5 万互动 · <a href="https://www.xiaohongshu.com/discovery/item/6a4109e40000000021023221" target="_blank" rel="noopener">原帖</a></span></div>
+    <div class="card"><div class="top"><h3>大疆 Pocket</h3><span class="tag num">41 条</span></div>
+      <q>双人来了以后要么选这种大疆，要么选 CCD，你可以选一样</q>
+      <span class="src">抖音 · 景区写真店 · 95.8 万互动 · <a href="https://www.douyin.com/video/7603681277224960761" target="_blank" rel="noopener">原帖</a></span></div>
+    <div class="card"><div class="top"><h3>iPhone 7 / 7P / 8P</h3><span class="tag num">旧 iPhone 27 条</span></div>
+      <q>它拍出来呢，人物就是自带透透的那种皮肤质感……千禧年的感觉</q>
+      <span class="src">抖音 · 144.9 万互动 · <a href="https://www.douyin.com/video/7617795110478627401" target="_blank" rel="noopener">原帖</a></span></div>
+    <div class="card"><div class="top"><h3>OPPO Find X9 / Reno15</h3><span class="tag num">17 条</span></div>
+      <q>全焦段 CCD 闪光人像……把复古数码相机那种闪光灯直打的质感做了进来</q>
+      <span class="src">百家号测评 · <a href="https://mbd.baidu.com/newspage/data/landingsuper?nid=news_9749363929909223105" target="_blank" rel="noopener">原帖</a></span></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="stamp">02 · 成像与出片</div>
+    <h2>好评集中在氛围感和闪光；差评来自糊片和二手机的麻烦</h2>
+  </div>
+  <div class="two">
+    <div class="chart" id="pos"><div class="group-title">正面描述</div></div>
+    <div class="chart" id="neg"><div class="group-title">负面描述</div></div>
+  </div>
+  <p class="note">两侧用同一比例尺。"糊"有两面：有人抱怨"画质真的很糊"，也有人刻意追求"微糊感才有古早氛围"。过曝同理，一部分人把它当作风格。</p>
+  <div class="cards">
+    <div class="card"><h3>闪光灯是核心动作</h3>
+      <q>8s 看一张真"神"图的诞生 #下雪氛围感 #ccd #闪光灯拍照</q>
+      <span class="src">抖音 · 264.2 万互动，本次样本最高 · <a href="https://www.douyin.com/video/7583535650042268982" target="_blank" rel="noopener">原帖</a></span></div>
+    <div class="card"><h3>肤色是人像的第一评价</h3>
+      <q>我最喜欢的就是它开闪拍出来的那种轻微过曝的皮肤质感</q>
+      <span class="src">小红书 · 佳能 G12 · <a href="https://www.xiaohongshu.com/discovery/item/6a26b70d0000000021018de7" target="_blank" rel="noopener">原帖</a></span></div>
+    <div class="card"><h3>过曝难控</h3>
+      <q>用 ccd 拍照总是一不小心就过曝了</q>
+      <span class="src">微博 · 17.0 万互动 · <a href="http://weibo.com/5985666104/QFvy27QJ3" target="_blank" rel="noopener">原帖</a></span></div>
+    <div class="card"><h3>二手溢价</h3>
+      <q>千万别买 CCD 相机，哪怕它叫飞思</q>
+      <span class="src">B 站 · <a href="https://www.bilibili.com/video/av116113249667024" target="_blank" rel="noopener">原帖</a>；另一条：咸鱼同款"溢价太严重" · <a href="https://www.bilibili.com/video/av116165879794657" target="_blank" rel="noopener">原帖</a></span></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="stamp">03 · 滤镜与风格</div>
+    <h2>闪光直出、胶片感、千禧是三大风格词</h2>
+  </div>
+  <div class="bubbles" id="bubbles"></div>
+  <p class="note">气泡面积对应帖子数。梦核类主要来自 B 站的 weirdcore 视频，其余风格词分布在各平台。</p>
+
+  <div class="sec-head" style="margin-top:12px">
+    <h3>手机 App 在按型号复刻"CCD 味"</h3>
+    <p class="note">醒图、美图秀秀的滤镜直接用真机型号命名，说明用户心里有一份"型号 → 风格"清单。下面的滤镜名都摘自样本里的修图教程。</p>
+  </div>
+  <div class="map" id="map"></div>
+  <div class="chart" id="apps"><div class="group-title">提到的修图 App / 预设（帖子数）</div></div>
+  <div class="cards">
+    <div class="card"><h3>醒图教程</h3>
+      <q>打开 CCD 后置二倍闪光灯，再打开底片模式，再调节一下白平衡，巨出片跟相机拍的没啥两样</q>
+      <span class="src">抖音 · 148.8 万互动 · <a href="https://www.douyin.com/video/7596279943807251185" target="_blank" rel="noopener">原帖</a></span></div>
+    <div class="card"><h3>零成本平替</h3>
+      <q>用自带备忘录分分钟省下买 CCD 和 5S 的预算……韩系朦胧感直接拉满</q>
+      <span class="src">抖音 · 81.7 万互动 · <a href="https://www.douyin.com/jingxuan?modal_id=7600415934918053126" target="_blank" rel="noopener">原帖</a></span></div>
+    <div class="card"><h3>AI 生图</h3>
+      <q>它学会了老式 CCD 的过曝，学会了手抖造成的模糊</q>
+      <span class="src">抖音 · 39.9 万互动 · <a href="https://www.douyin.com/video/7632536437665386737" target="_blank" rel="noopener">原帖</a></span></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="stamp">04 · 场景与人群</div>
+    <h2>和朋友互拍是最大的使用场景</h2>
+  </div>
+  <div class="chart" id="scenes"></div>
+  <p class="note">人群以高中生、大学生和年轻女性为主。学生预算集中在 300 元以内到几百元；热门型号在闲鱼溢价到一千多元。还出现了按天租赁（IXUS 每天 30 元，凭学生证免押金）和陪拍服务。演唱会场景有人问"ccd 能带吗？听说大疆都会收"。</p>
+</section>
+
+<section style="border-bottom:0">
+  <div class="caveat">
+    <strong style="color:var(--ink)">读数说明</strong>
+    <span>数字是"提到该词的帖子数"，由关键词匹配得出，有少量误命中，适合看排序和相对大小，不适合当精确比例引用。</span>
+    <span>每个平台固定抽 200 条，平台之间的条数不代表真实声量。互动量是数据源提供的"总互动量"字段。</span>
+    <span>理光 GR、佳能 G7X、富士 X100 等机型是 CMOS，因为在讨论里被当作 CCD 提及，所以归入"被叫作 CCD 的非 CCD 设备"。</span>
+  </div>
+</section>
+</div>
+
+<script>
+(function(){
+  function bars(id,rows,max){
+    var el=document.getElementById(id); if(!el) return;
+    rows.forEach(function(r){
+      if(r.group){var g=document.createElement('div');g.className='group-title';g.textContent=r.group;el.appendChild(g);return;}
+      var d=document.createElement('div');d.className='row';
+      d.innerHTML='<span>'+r[0]+'</span><div class="track"><div class="bar '+(r[2]||'')+'" style="width:'+(r[1]/max*100).toFixed(1)+'%"></div></div><span class="num">'+r[1]+'</span>';
+      el.appendChild(d);
+    });
+  }
+  // funnel
+  var f=[["1,400","采集：7 个平台 × 200 条"],["1,246","正文里确实出现 CCD（去掉链接、ID 里的字母串）"],["901","相机语境（剔除汽车、设计公司、工业、CPU 等）"],["737","按内容去重（主要是微博粉丝转发）"],["692","去掉单账号刷屏，作为有效样本"]];
+  var fe=document.getElementById('funnel');
+  f.forEach(function(x,i){var v=parseInt(x[0].replace(',',''));var d=document.createElement('div');d.className='frow';
+    d.innerHTML='<div class="fbar'+(i==f.length-1?' final':'')+'" style="width:'+Math.max(v/1400*100,30).toFixed(1)+'%">'+x[0]+'</div><span>'+x[1]+'</span>';fe.appendChild(d);});
+
+  bars('models',[
+    {group:'真 CCD 卡片机'},
+    ['佳能 IXUS 系列',16],['佳能 G11 / G12',11],['富士 F / J / Z 系列',9],['索尼 T / W / TX 系列',8],['尼康 COOLPIX 等',6],['佳能 A / SX 系列',4],
+    {group:'被叫作 CCD 的非 CCD 设备'},
+    ['大疆 Pocket',41,'alt'],['理光 GR',37,'alt'],['旧 iPhone',27,'alt'],['OPPO 手机',17,'alt'],['佳能 G7X 系列',13,'alt'],['富士 X100 / X30 等',12,'alt'],['vivo 手机',8,'alt'],['影石',5,'alt'],
+    {group:'低价机与模仿手段'},
+    ['国产低价 / 玩具 CCD',33,'grey'],['AI 生图 CCD 风',21,'grey']
+  ],41);
+
+  bars('pos',[['出片 / 氛围感',207],['复古 / 古早',130],['色彩鲜艳浓郁',88],['闪光灯',87],['清晰',68],['质感',65],['肤色 / 显白',56],['直出不用修',37],['和手机效果不同',37]],207);
+  bars('neg',[['糊 / 低像素 / 抓拍难',51,'neg'],['溢价 / 被坑 / 智商税',45,'neg'],['维修 / 故障',31,'neg'],['电池 / 充电配件',26,'neg'],['过曝难控',9,'neg']],207);
+
+  var b=[['闪光直出',87,1],['胶片感',61],['夜景',53],['千禧 / Y2K',34],['低饱和柔焦',31],['蓝调冷调',24],['韩系',23],['暖黄泛黄',15],['梦核怪核',13],['日系',10],['高饱和',9],['电影感',7],['ins 欧美',5],['港风',4]];
+  var be=document.getElementById('bubbles');
+  b.forEach(function(x){var s=Math.round(46+Math.sqrt(x[1])*11);var d=document.createElement('div');d.className='bub'+(x[2]?' hot':'');d.style.width=s+'px';d.style.height=s+'px';
+    d.innerHTML='<span>'+x[0]+'</span><span class="num">'+x[1]+'</span>';be.appendChild(d);});
+
+  var m=[['佳能 IXUS 130 / 310',['佳能130RAW','闪光IXUS 310']],['佳能 G7X2',['G7X2 RAW','闪光G7x2']],['佳能 G11 / G12',['G11 RAW']],['理光 GR',['闪光理光','理光HDF','理光正片','理光负片']],['富士',['闪光富士','富士NC']],['iPhone 6s / 5s',['闪光IP6S','备忘录扫描文稿']],['卡西欧自拍神器',['自拍神器RAW']]];
+  var me=document.getElementById('map');
+  m.forEach(function(x){var d=document.createElement('div');d.className='mrow';
+    d.innerHTML='<div class="cam">'+x[0]+'</div><div class="arrow"></div><div class="chips">'+x[1].map(function(c){return '<span class="chip">'+c+'</span>'}).join('')+'</div>';me.appendChild(d);});
+
+  bars('apps',[['醒图',15],['黄油相机',15],['Lightroom / LUT / 预设',14],['美图秀秀',11],['泛提"CCD 滤镜 / 模式"',10],['Dazz',8],['ProCCD、咔皮、gloam',3]],15);
+  bars('scenes',[['朋友 / 闺蜜互拍',158],['自拍 / 穿搭',97],['学生 / 校园',91],['旅行',74],['夜景',53],['演唱会 / 追星',26]],158);
+})();
+</script>
